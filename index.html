@@ -1,1 +1,169 @@
-<h1>Github pages tests</h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Dealer - Fogon</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root { --rojo-fogon: #e63946; }
+        body { background: #f4f4f4; font-family: sans-serif; }
+
+        /* Pantalla de entrada */
+        #login-page {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-login {
+            width: 100%;
+            max-width: 380px;
+            padding: 25px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Estilos del sistema principal */
+        .navbar-custom { background: #1a1a1a; color: white; }
+        .hidden { display: none !important; }
+        .btn-principal { background: var(--rojo-fogon); color: white; border: none; }
+        .btn-principal:hover { background: #b02a37; color: white; }
+        
+        .tabla-scroll { max-height: 500px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+
+    <div id="login-page">
+        <div class="card-login">
+            <h3 class="text-center mb-4"> Dealer Fogon</h3>
+            <form id="formEntrada">
+                <div class="mb-3">
+                    <label class="form-label">Usuario</label>
+                    <input type="text" id="user" class="form-control" placeholder="Usuario" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="pass" class="form-control" placeholder="Contraseña" required>
+                </div>
+                <div id="error" class="text-danger small mb-3 hidden">Usuario o clave incorrectos</div>
+                <button type="submit" class="btn btn-principal w-100">Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="sistema-page" class="hidden">
+        <nav class="navbar navbar-dark navbar-custom mb-4">
+            <div class="container">
+                <span class="navbar-brand">🏁 Dealer de Motores Fogon</span>
+                <button class="btn btn-sm btn-outline-danger" onclick="window.location.reload()">Salir</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm p-3">
+                        <h5 class="mb-3">Añadir Motor</h5>
+                        <form id="motorForm">
+                            <input type="text" id="marca" class="form-control mb-2" placeholder="Marca (Suzuki, Tauro, Gato, etc)" required>
+                            <input type="text" id="modelo" class="form-control mb-2" placeholder="Modelo" required>
+                            <input type="text" id="cc" class="form-control mb-2" placeholder="Cilindrada" required>
+                            <input type="number" id="precio" class="form-control mb-3" placeholder="Precio RD$" required>
+                            <button type="submit" class="btn btn-dark w-100">Registrar en Tabla</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card shadow-sm p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="m-0">Carrito</h5>
+                            <input type="text" id="buscador" class="form-control w-50" placeholder="Buscar marca...">
+                        </div>
+                        <div class="table-responsive tabla-scroll">
+                            <table class="table table-hover">
+                                <thead class="table-secondary">
+                                    <tr>
+                                        <th>Marca</th>
+                                        <th>Modelo</th>
+                                        <th>CC</th>
+                                        <th>Precio</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cuerpoTabla">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGICA DE LOGIN ---
+        const loginDiv = document.getElementById('login-page');
+        const sistemaDiv = document.getElementById('sistema-page');
+        
+        document.getElementById('formEntrada').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+
+            
+            if(u === 'Kendry' && p === '1234') {
+                loginDiv.classList.add('hidden');
+                sistemaDiv.classList.remove('hidden');
+            } else {
+                document.getElementById('error').classList.remove('hidden');
+            }
+        });
+
+        // --- LOGICA DE LA TABLA ---
+        const motorForm = document.getElementById('motorForm');
+        const tabla = document.getElementById('cuerpoTabla');
+
+        motorForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Capturar datos
+            const marca = document.getElementById('marca').value;
+            const modelo = document.getElementById('modelo').value;
+            const cc = document.getElementById('cc').value;
+            const precio = document.getElementById('precio').value;
+
+            // Crear la fila con botón de borrar
+            const nuevaFila = `
+                <tr>
+                    <td><b>${marca}</b></td>
+                    <td>${modelo}</td>
+                    <td>${cc}</td>
+                    <td>RD$ ${parseInt(precio).toLocaleString()}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove()">Eliminar</button></td>
+                </tr>
+            `;
+
+            tabla.innerHTML += nuevaFila;
+            motorForm.reset(); // Limpiar formulario
+            console.log("Motor agregado: " + marca);
+        });
+
+        // Función de búsqueda simple
+        document.getElementById('buscador').addEventListener('keyup', function(){
+            let valor = this.value.toLowerCase();
+            let filas = tabla.getElementsByTagName('tr');
+            
+            for(let i=0; i < filas.length; i++) {
+                let textoFila = filas[i].innerText.toLowerCase();
+                filas[i].style.display = textoFila.includes(valor) ? "" : "none";
+            }
+        });
+    </script>
+</body>
+</html>
