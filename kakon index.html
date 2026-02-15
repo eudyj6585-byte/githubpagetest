@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para mi hermano Anthony</title>
+    <style>
+        :root { --rojo-fogon: #e63946; }
+        
+        body {
+            background-color: #1a1a1a; /* Fondo oscuro elegante */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            color: white;
+        }
+
+        .contenedor {
+            text-align: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        #sobre-cerrado {
+            font-size: 120px;
+            transition: transform 0.3s;
+        }
+
+        #sobre-cerrado:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .carta {
+            background: #fff;
+            color: #333;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(230, 57, 70, 0.5);
+            max-width: 400px;
+            display: none; /* Oculta al inicio */
+            animation: entradaCarta 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-bottom: 8px solid var(--rojo-fogon);
+        }
+
+        .firma {
+            color: var(--rojo-fogon);
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            display: block;
+        }
+
+        h1 { color: var(--rojo-fogon); margin-top: 0; }
+        p { font-size: 1.1rem; line-height: 1.6; }
+
+        @keyframes entradaCarta {
+            from { opacity: 0; transform: scale(0.5) translateY(100px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Lluvia de iconos */
+        .flotante {
+            position: absolute;
+            user-select: none;
+            pointer-events: none;
+            animation: lluvia linear forwards;
+        }
+
+        @keyframes lluvia {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor" onclick="abrirSorpresa()">
+        <div id="sobre-cerrado">🎁</div>
+        
+        <div id="carta-mensaje" class="carta">
+            <h1> Anthony</h1>
+            <p>En este San Valentín quiero darte las gracias
+                por estar siempre ahi mnt en las buenas</p>
+            <p>y en las malas
+                se le quiere mucho por este lao en velda</p>
+            <span class="firma">De Fogon para el mmg de Anthony </span>
+        </div>
+    </div>
+
+    <script>
+        function abrirSorpresa() {
+            // Cambiamos lo que se ve
+            document.getElementById('sobre-cerrado').style.display = 'none';
+            document.getElementById('carta-mensaje').style.display = 'block';
+            document.body.style.backgroundColor = '#000';
+
+            // Lluvia de fuegos y corazones
+            const iconos = ['🔥', '❤️', '👊', '✨', '⚡'];
+            
+            for (let i = 0; i < 60; i++) {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.classList.add('flotante');
+                    el.innerText = iconos[Math.floor(Math.random() * iconos.length)];
+                    
+                    el.style.left = Math.random() * 100 + "vw";
+                    el.style.top = "-5vh";
+                    
+                    const duracion = Math.random() * 3 + 2;
+                    el.style.animationDuration = duracion + "s";
+                    el.style.fontSize = Math.random() * 30 + 15 + "px";
+
+                    document.body.appendChild(el);
+
+                    setTimeout(() => el.remove(), duracion * 1000);
+                }, i * 50); // Aparecen poco a poco
+            }
+        }
+    </script>
+</body>
+</html>
